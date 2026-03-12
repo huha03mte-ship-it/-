@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RS Game | Play & Earn</title>
+    <title>RS Game | เล่นเกมได้เงินจริง</title>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore-compat.js"></script>
@@ -11,380 +11,221 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = { theme: { extend: { colors: { primary: '#22c55e', primaryDark: '#16a34a', bgLight: '#f0fdf4' }, fontFamily: { sans: ['Kanit', 'sans-serif'] } } } }
-    </script>
     <style>
-        body { background-color: #f0fdf4; color: #1f2937; }
-        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(34, 197, 94, 0.2); box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1); }
+        body { font-family: 'Kanit', sans-serif; background: #f0fdf4; color: #1f2937; }
+        .glass-card { background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border: 1px solid rgba(34,197,94,0.2); box-shadow: 0 8px 32px rgba(34,197,94,0.1); }
         .menu-btn.active { color: #22c55e; border-bottom: 3px solid #22c55e; font-weight: 600; }
         .section { display: none; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
-        
-        /* Game Animation */
-        @keyframes shake {
-            0% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-15px) rotate(-15deg); }
-            50% { transform: translateY(0) rotate(0deg); }
-            75% { transform: translateY(-15px) rotate(15deg); }
-            100% { transform: translateY(0) rotate(0deg); }
-        }
-        .anim-shake { animation: shake 0.5s infinite; display: inline-block; font-size: 5rem; }
-        .result-emoji { font-size: 5rem; animation: popIn 0.3s ease forwards; display: inline-block; }
-        @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Game Anim */
+        @keyframes shake { 0%, 50%, 100% { transform: translateY(0) rotate(0deg); } 25% { transform: translateY(-15px) rotate(-15deg); } 75% { transform: translateY(-15px) rotate(15deg); } }
+        .anim-shake { animation: shake 0.5s infinite; font-size: 5rem; display: inline-block; }
+        .result-emoji { font-size: 5rem; display: inline-block; animation: fadeIn 0.3s ease; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col pb-20 md:pb-0 md:pt-20">
+<body class="min-h-screen pb-20 md:pt-10">
 
-    <div id="auth-container" class="min-h-screen flex items-center justify-center p-4">
+    <div id="auth-box" class="min-h-screen flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-md p-8 rounded-2xl">
-            <h1 class="text-3xl font-bold text-center text-primary mb-6"><i class="fas fa-leaf"></i> RS Game</h1>
-            
-            <div id="login-form">
-                <input type="email" id="log-email" placeholder="อีเมล" class="w-full mb-4 p-3 border border-green-200 rounded-lg focus:outline-none focus:border-primary">
-                <input type="password" id="log-pw" placeholder="รหัสผ่าน" class="w-full mb-6 p-3 border border-green-200 rounded-lg focus:outline-none focus:border-primary">
-                <button onclick="login()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-lg transition shadow-lg">เข้าสู่ระบบ</button>
-                <p class="text-center mt-4 text-sm text-gray-500">ยังไม่มีบัญชี? <span class="text-primary cursor-pointer font-bold" onclick="toggleAuth()">สมัครสมาชิก</span></p>
-            </div>
-
-            <div id="register-form" class="hidden">
-                <input type="text" id="reg-name" placeholder="ชื่อเล่น / ชื่อจริง" class="w-full mb-4 p-3 border border-green-200 rounded-lg focus:outline-none focus:border-primary">
-                <input type="email" id="reg-email" placeholder="อีเมล" class="w-full mb-4 p-3 border border-green-200 rounded-lg focus:outline-none focus:border-primary">
-                <input type="password" id="reg-pw" placeholder="ตั้งรหัสผ่าน" class="w-full mb-6 p-3 border border-green-200 rounded-lg focus:outline-none focus:border-primary">
-                <button onclick="register()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-lg transition shadow-lg">สมัครสมาชิกเว็บเกม</button>
-                <p class="text-center mt-4 text-sm text-gray-500">มีบัญชีแล้ว? <span class="text-primary cursor-pointer font-bold" onclick="toggleAuth()">เข้าสู่ระบบ</span></p>
-            </div>
+            <h1 class="text-3xl font-bold text-center text-green-500 mb-6"><i class="fas fa-leaf"></i> RS Game</h1>
+            <input type="email" id="email" placeholder="อีเมล" class="w-full mb-4 p-3 border border-green-200 rounded-lg outline-none">
+            <input type="password" id="pw" placeholder="รหัสผ่าน" class="w-full mb-4 p-3 border border-green-200 rounded-lg outline-none">
+            <input type="text" id="name" placeholder="ชื่อเล่น (ใส่เฉพาะตอนสมัคร)" class="w-full mb-6 p-3 border border-green-200 rounded-lg outline-none">
+            <button onclick="login()" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg mb-3 shadow hover:bg-green-600">เข้าสู่ระบบ</button>
+            <button onclick="register()" class="w-full bg-white text-green-600 border border-green-500 font-bold py-3 rounded-lg shadow hover:bg-green-50">สมัครสมาชิก</button>
         </div>
     </div>
 
-    <div id="app-container" class="hidden w-full max-w-2xl mx-auto p-4 md:glass-card md:rounded-2xl">
+    <div id="app-box" class="hidden max-w-md mx-auto p-4">
         
-        <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-green-100">
-            <div>
-                <p class="text-sm text-gray-500">สวัสดี, <span id="display-name" class="font-bold text-gray-800">ผู้เล่น</span></p>
-                <p class="text-xs text-primary bg-green-100 px-2 py-1 rounded mt-1 inline-block" id="display-rspay">ID ห้องหลัก: ยังไม่ได้สร้าง</p>
-            </div>
-            <div class="text-right">
-                <p class="text-sm text-gray-500">ยอดเงินคงเหลือ</p>
-                <h2 class="text-2xl font-bold text-primary">฿ <span id="display-balance">0.00</span></h2>
-            </div>
+        <div class="glass-card p-4 rounded-xl flex justify-between items-center mb-6">
+            <div><p class="text-sm text-gray-500">สวัสดี,</p><p id="disp-name" class="font-bold text-gray-800">-</p></div>
+            <div class="text-right"><p class="text-sm text-gray-500">ยอดเงิน</p><h2 class="text-2xl font-bold text-green-500">฿ <span id="disp-bal">0.00</span></h2></div>
         </div>
 
-        <div id="sec-home" class="section active text-center">
-            <img src="https://cdn-icons-png.flaticon.com/512/5161/5161308.png" alt="Welcome" class="w-32 mx-auto mb-4 drop-shadow-lg">
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">ยินดีต้อนรับสู่ระบบเกม</h2>
-            <p class="text-gray-500 mb-6">เล่นง่าย ได้เงินจริง กรุณาสร้างบัญชีฝาก-ถอนก่อนเริ่มเล่น</p>
-            <button onclick="switchTab('sec-bank')" class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-md hover:bg-primaryDark transition"><i class="fas fa-wallet"></i> ไปหน้าฝาก-ถอน</button>
-        </div>
-
-        <div id="sec-game" class="section text-center">
+        <div id="sec-game" class="section active text-center glass-card p-6 rounded-xl">
             <div id="game-setup">
-                <h2 class="text-xl font-bold mb-4 text-gray-800">เป่ายิ้งฉุบ พารวย</h2>
-                <div class="mb-6">
-                    <p class="text-sm text-gray-500 mb-2">ระบุจำนวนเงินเดิมพัน</p>
-                    <input type="number" id="bet-amount" class="text-center text-2xl w-full max-w-[200px] mx-auto border-b-2 border-primary bg-transparent focus:outline-none py-2 font-bold" placeholder="0">
-                </div>
-                <div class="flex justify-center gap-4 mb-6">
-                    <button onclick="playGame('rock')" class="w-20 h-20 text-4xl bg-white border-2 border-green-200 rounded-full hover:border-primary hover:bg-green-50 transition shadow-sm">✊</button>
-                    <button onclick="playGame('paper')" class="w-20 h-20 text-4xl bg-white border-2 border-green-200 rounded-full hover:border-primary hover:bg-green-50 transition shadow-sm">🖐</button>
-                    <button onclick="playGame('scissors')" class="w-20 h-20 text-4xl bg-white border-2 border-green-200 rounded-full hover:border-primary hover:bg-green-50 transition shadow-sm">✌</button>
+                <h2 class="text-xl font-bold mb-4">เป่ายิ้งฉุบ พารวย</h2>
+                <input type="number" id="bet" class="text-center text-3xl w-full border-b-2 border-green-500 bg-transparent outline-none py-2 font-bold mb-6 text-green-600" placeholder="ใส่เงินเดิมพัน">
+                <div class="flex justify-center gap-4">
+                    <button onclick="play('rock')" class="w-20 h-20 text-4xl bg-white border-2 border-green-200 rounded-full shadow hover:bg-green-50 transition">✊</button>
+                    <button onclick="play('paper')" class="w-20 h-20 text-4xl bg-white border-2 border-green-200 rounded-full shadow hover:bg-green-50 transition">🖐</button>
+                    <button onclick="play('scissors')" class="w-20 h-20 text-4xl bg-white border-2 border-green-200 rounded-full shadow hover:bg-green-50 transition">✌</button>
                 </div>
             </div>
-
-            <div id="game-anim" class="hidden py-10">
+            <div id="game-anim" class="hidden py-8">
                 <div class="flex justify-center items-center gap-8">
-                    <div class="text-center">
-                        <p class="text-sm text-gray-500 mb-2">คุณ</p>
-                        <div id="anim-user" class="anim-shake">✊</div>
-                    </div>
-                    <div class="text-3xl font-bold text-gray-400">VS</div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-500 mb-2">บอท</p>
-                        <div id="anim-bot" class="anim-shake" style="transform: scaleX(-1);">✊</div>
-                    </div>
+                    <div><p class="text-sm text-gray-500">คุณ</p><div id="u-hand" class="anim-shake">✊</div></div>
+                    <div class="text-2xl font-bold text-gray-400">VS</div>
+                    <div><p class="text-sm text-gray-500">บอท</p><div id="b-hand" class="anim-shake" style="transform:scaleX(-1);">✊</div></div>
                 </div>
-                <h3 class="text-xl font-bold text-primary mt-8 animate-pulse">กำลังสุ่มผล...</h3>
+                <p class="text-green-500 font-bold mt-6 animate-pulse">กำลังสุ่มผล...</p>
             </div>
         </div>
 
         <div id="sec-bank" class="section">
-            <h2 class="text-xl font-bold mb-4 text-center text-gray-800"><i class="fas fa-university text-primary"></i> ระบบฝาก-ถอน (RSPAY)</h2>
-            
-            <div id="create-rspay-box" class="glass-card p-6 rounded-xl text-center">
-                <div class="bg-red-50 text-red-500 p-3 rounded-lg mb-4 text-sm border border-red-100"><i class="fas fa-exclamation-circle"></i> คุณต้องสร้างรหัสห้องหลักก่อนเข้าสู่ระบบฝาก-ถอน</div>
-                <input type="text" id="rspay-name" readonly class="w-full mb-4 p-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-600 outline-none text-center font-bold">
-                <input type="password" id="rspay-pw" placeholder="ตั้งรหัสผ่านสำหรับเว็บฝากถอน" class="w-full mb-6 p-3 border border-green-300 rounded-lg focus:outline-none focus:border-primary text-center">
-                <button onclick="createRSPayAccount()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-lg transition shadow-md"><i class="fas fa-key"></i> สร้าง ID ห้องหลัก</button>
+            <div class="glass-card p-6 rounded-xl text-center mb-4">
+                <h2 class="text-lg font-bold text-gray-800 mb-2"><i class="fas fa-arrow-down text-green-500"></i> ฝากเงิน</h2>
+                <p class="text-sm text-gray-500 mb-4">การฝากเงินกรุณาติดต่อแอดมินพร้อมแจ้งอีเมลของคุณ</p>
+                <button onclick="contactAdmin()" class="w-full bg-[#06C755] text-white font-bold py-3 rounded-lg shadow-md hover:bg-[#05b34c]"><i class="fab fa-line text-xl mr-2"></i> ติดต่อแอดมินเพื่อฝากเงิน</button>
             </div>
 
-            <div id="has-rspay-box" class="glass-card p-6 rounded-xl text-center hidden">
-                <div class="w-16 h-16 bg-green-100 text-primary rounded-full flex items-center justify-center text-2xl mx-auto mb-4"><i class="fas fa-check"></i></div>
-                <h3 class="text-lg font-bold text-gray-800">ข้อมูลบัญชีห้องหลักของคุณ</h3>
-                <div class="bg-gray-50 p-4 rounded-lg my-4 border border-gray-200">
-                    <p class="text-sm text-gray-500">รหัสเข้าใช้งาน (ID):</p>
-                    <p class="text-3xl font-bold text-primary tracking-widest my-2" id="show-rs-id">------</p>
-                    <p class="text-xs text-red-500 mt-2">* โปรดจำรหัส ID นี้เพื่อใช้ล็อกอินหน้าฝาก-ถอน</p>
-                </div>
-                <a href="https://rspay.netlify.app" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow-md mt-4">
-                    <i class="fas fa-external-link-alt"></i> ไปหน้าเว็บฝาก-ถอนเงิน
-                </a>
+            <div class="glass-card p-6 rounded-xl">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 text-center"><i class="fas fa-arrow-up text-red-500"></i> ถอนเงิน</h2>
+                <input type="number" id="wd-amount" placeholder="จำนวนเงินที่ต้องการถอน" class="w-full p-3 border border-gray-200 rounded-lg mb-3 outline-none">
+                <select id="wd-bank" class="w-full p-3 border border-gray-200 rounded-lg mb-3 outline-none">
+                    <option value="">เลือกธนาคาร</option><option value="KBANK">กสิกรไทย</option><option value="SCB">ไทยพาณิชย์</option><option value="BBL">กรุงเทพ</option><option value="KTB">กรุงไทย</option><option value="PROMPTPAY">พร้อมเพย์</option>
+                </select>
+                <input type="text" id="wd-acc" placeholder="เลขบัญชี / เบอร์พร้อมเพย์" class="w-full p-3 border border-gray-200 rounded-lg mb-4 outline-none">
+                <button onclick="requestWithdraw()" class="w-full bg-red-500 text-white font-bold py-3 rounded-lg shadow-md hover:bg-red-600">ยืนยันการถอนเงิน</button>
             </div>
         </div>
 
-        <div id="sec-profile" class="section">
-            <div class="glass-card p-6 rounded-xl text-center">
-                <div class="w-20 h-20 bg-primary text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg"><i class="fas fa-user"></i></div>
-                <h2 class="text-xl font-bold text-gray-800" id="prof-name">-</h2>
-                <p class="text-gray-500 mb-6" id="prof-email">-</p>
-                <button onclick="logout()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-lg transition shadow-md"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
-            </div>
+        <div id="sec-profile" class="section glass-card p-6 rounded-xl text-center">
+            <div class="w-20 h-20 bg-green-500 text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow"><i class="fas fa-user"></i></div>
+            <h2 id="prof-name" class="text-xl font-bold text-gray-800">-</h2>
+            <p id="prof-email" class="text-gray-500 mb-6">-</p>
+            <button onclick="auth.signOut()" class="w-full bg-gray-200 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-300">ออกจากระบบ</button>
         </div>
 
     </div>
 
-    <div id="bottom-nav" class="hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] flex justify-around p-2 md:relative md:bg-transparent md:border-none md:shadow-none md:justify-center md:gap-4 md:mt-4">
-        <button class="menu-btn active flex-1 py-2 text-center text-gray-400 hover:text-primary transition" onclick="switchTab('sec-home', this)"><i class="fas fa-home block text-xl mb-1"></i><span class="text-xs">หน้าหลัก</span></button>
-        <button class="menu-btn flex-1 py-2 text-center text-gray-400 hover:text-primary transition" onclick="switchTab('sec-game', this)"><i class="fas fa-gamepad block text-xl mb-1"></i><span class="text-xs">เล่นเกม</span></button>
-        <button class="menu-btn flex-1 py-2 text-center text-gray-400 hover:text-primary transition" onclick="switchTab('sec-bank', this)"><i class="fas fa-wallet block text-xl mb-1"></i><span class="text-xs">ฝาก-ถอน</span></button>
-        <button class="menu-btn flex-1 py-2 text-center text-gray-400 hover:text-primary transition" onclick="switchTab('sec-profile', this)"><i class="fas fa-user block text-xl mb-1"></i><span class="text-xs">โปรไฟล์</span></button>
+    <div id="bottom-nav" class="hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 shadow-lg flex justify-around p-2 z-50">
+        <button class="menu-btn active flex-1 py-2 text-center text-gray-400" onclick="switchTab('sec-game', this)"><i class="fas fa-gamepad block text-xl mb-1"></i><span class="text-xs">เล่นเกม</span></button>
+        <button class="menu-btn flex-1 py-2 text-center text-gray-400" onclick="switchTab('sec-bank', this)"><i class="fas fa-wallet block text-xl mb-1"></i><span class="text-xs">ฝาก-ถอน</span></button>
+        <button class="menu-btn flex-1 py-2 text-center text-gray-400" onclick="switchTab('sec-profile', this)"><i class="fas fa-user block text-xl mb-1"></i><span class="text-xs">บัญชี</span></button>
     </div>
 
     <script>
-        // ⚠️ Firebase Config 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCrpBKrWplX3qQT_h-QMftmaTSV71sikf4",
-            projectId: "fnag-b078c"
-        };
+        // ⚠️ โค้ด Firebase ของคุณ
+        const firebaseConfig = { apiKey: "AIzaSyCrpBKrWplX3qQT_h-QMftmaTSV71sikf4", projectId: "fnag-b078c" };
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        const auth = firebase.auth(); const db = firebase.firestore();
 
-        let currentUser = null;       // ข้อมูล User ในเว็บเกม
-        let rsPayData = null;         // ข้อมูล ID 6 หลัก (ใช้ดึงเงิน/ประวัติ)
-        let unsubsribeRSPay = null;   // ตัวหยุดดึงข้อมูล Real-time
+        let userData = null; let adminLink = '';
 
-        // --- UI & Navigation ---
-        function toggleAuth() {
-            document.getElementById('login-form').classList.toggle('hidden');
-            document.getElementById('register-form').classList.toggle('hidden');
-        }
+        // ดึงลิงก์แอดมิน
+        db.collection('settings').doc('admin').onSnapshot(doc => { if(doc.exists) adminLink = doc.data().contact_link; });
 
-        function switchTab(tabId, btnEl) {
+        function switchTab(tabId, btn) {
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            if(btnEl) {
-                document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
-                btnEl.classList.add('active');
-            }
+            document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
         }
 
-        // --- Auth Functions (ระบบสมัคร-ล็อกอินเว็บเกม) ---
         async function register() {
-            const name = document.getElementById('reg-name').value;
-            const email = document.getElementById('reg-email').value;
-            const pw = document.getElementById('reg-pw').value;
-            if(!name || !email || !pw) return Swal.fire('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบ', 'warning');
-
-            Swal.fire({ title: 'กำลังสมัคร...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            const e = document.getElementById('email').value, p = document.getElementById('pw').value, n = document.getElementById('name').value;
+            if(!e || !p || !n) return Swal.fire('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบ (ต้องใส่ชื่อด้วย)', 'warning');
+            Swal.fire({title:'กำลังสมัคร...', didOpen:()=>Swal.showLoading()});
             try {
-                const cred = await auth.createUserWithEmailAndPassword(email, pw);
-                // สร้างข้อมูลในฐานข้อมูลเว็บเกม
-                await db.collection('game_users').doc(cred.user.uid).set({
-                    email: email, name: name, rspay_id: null
-                });
+                const cred = await auth.createUserWithEmailAndPassword(e, p);
+                await db.collection('users').doc(cred.user.uid).set({ email: e, name: n, balance: 0, winRate: 35 });
                 Swal.close();
-            } catch (error) { Swal.fire('ผิดพลาด', 'อีเมลนี้ถูกใช้แล้ว หรือรหัสผ่านสั้นเกินไป', 'error'); }
+            } catch (err) { Swal.fire('ผิดพลาด', 'อีเมลนี้ถูกใช้แล้ว หรือรหัสผ่านสั้นไป', 'error'); }
         }
 
         async function login() {
-            const email = document.getElementById('log-email').value;
-            const pw = document.getElementById('log-pw').value;
-            if(!email || !pw) return Swal.fire('แจ้งเตือน', 'กรุณากรอกข้อมูล', 'warning');
-
-            Swal.fire({ title: 'กำลังเข้าระบบ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-            try {
-                await auth.signInWithEmailAndPassword(email, pw);
-                Swal.close();
-            } catch (error) { Swal.fire('ผิดพลาด', 'อีเมลหรือรหัสผ่านไม่ถูกต้อง', 'error'); }
+            const e = document.getElementById('email').value, p = document.getElementById('pw').value;
+            if(!e || !p) return Swal.fire('แจ้งเตือน', 'กรอกอีเมลและรหัสผ่าน', 'warning');
+            Swal.fire({title:'กำลังเข้าสู่ระบบ...', didOpen:()=>Swal.showLoading()});
+            try { await auth.signInWithEmailAndPassword(e, p); Swal.close(); } catch (err) { Swal.fire('ผิดพลาด', 'ข้อมูลไม่ถูกต้อง', 'error'); }
         }
 
-        function logout() { auth.signOut(); }
-
-        // --- ตรวจสอบสถานะการเข้าสู่ระบบ ---
-        auth.onAuthStateChanged(async user => {
-            if (user) {
-                document.getElementById('auth-container').classList.add('hidden');
-                document.getElementById('app-container').classList.remove('hidden');
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                document.getElementById('auth-box').classList.add('hidden');
+                document.getElementById('app-box').classList.remove('hidden');
                 document.getElementById('bottom-nav').classList.remove('hidden');
                 
-                // ดึงข้อมูลบัญชีเว็บเกม
-                db.collection('game_users').doc(user.uid).onSnapshot(doc => {
-                    if (doc.exists) {
-                        currentUser = doc.data();
-                        document.getElementById('display-name').innerText = currentUser.name;
-                        document.getElementById('prof-name').innerText = currentUser.name;
-                        document.getElementById('prof-email').innerText = currentUser.email;
-                        document.getElementById('rspay-name').value = currentUser.name; // เตรียมดึงชื่อไปใช้สร้างบัญชีธนาคาร
-                        
-                        // ตรวจสอบว่าเคยสร้างบัญชี RSPAY หรือยัง
-                        if (currentUser.rspay_id) {
-                            document.getElementById('create-rspay-box').classList.add('hidden');
-                            document.getElementById('has-rspay-box').classList.remove('hidden');
-                            document.getElementById('show-rs-id').innerText = currentUser.rspay_id;
-                            document.getElementById('display-rspay').innerText = `ID ห้องหลัก: ${currentUser.rspay_id}`;
-                            
-                            // ดึงยอดเงิน Real-time จาก ID 6 หลัก (เพื่อให้แอดมินจัดการได้)
-                            if (unsubsribeRSPay) unsubsribeRSPay();
-                            unsubsribeRSPay = db.collection('users').doc(currentUser.rspay_id).onSnapshot(rsDoc => {
-                                if (rsDoc.exists) {
-                                    rsPayData = rsDoc.data();
-                                    document.getElementById('display-balance').innerText = rsPayData.balance.toLocaleString('en-US', {minimumFractionDigits: 2});
-                                }
-                            });
-                        } else {
-                            // ยังไม่สร้างบัญชี
-                            document.getElementById('display-rspay').innerText = 'ID ห้องหลัก: ยังไม่ได้สร้าง (เครดิต 0)';
-                            document.getElementById('display-balance').innerText = '0.00';
-                            document.getElementById('create-rspay-box').classList.remove('hidden');
-                            document.getElementById('has-rspay-box').classList.add('hidden');
-                        }
+                db.collection('users').doc(user.uid).onSnapshot(doc => {
+                    if(doc.exists) {
+                        userData = doc.data();
+                        document.getElementById('disp-name').innerText = userData.name;
+                        document.getElementById('prof-name').innerText = userData.name;
+                        document.getElementById('prof-email').innerText = userData.email;
+                        document.getElementById('disp-bal').innerText = (userData.balance||0).toLocaleString('en-US',{minimumFractionDigits:2});
                     }
                 });
             } else {
-                document.getElementById('auth-container').classList.remove('hidden');
-                document.getElementById('app-container').classList.add('hidden');
+                document.getElementById('auth-box').classList.remove('hidden');
+                document.getElementById('app-box').classList.add('hidden');
                 document.getElementById('bottom-nav').classList.add('hidden');
-                if (unsubsribeRSPay) unsubsribeRSPay();
+                userData = null;
             }
         });
 
-        // --- สร้าง ID ฝากถอน (ID ห้องหลัก 6 หลัก) ---
-        async function generateUniqueId() {
-            let isUnique = false;
-            let newId = '';
-            while (!isUnique) {
-                newId = Math.floor(100000 + Math.random() * 900000).toString();
-                const doc = await db.collection('users').doc(newId).get();
-                if (!doc.exists) isUnique = true;
-            }
-            return newId;
+        function contactAdmin() {
+            if(adminLink) window.open(adminLink, '_blank');
+            else Swal.fire('แจ้งเตือน', 'แอดมินยังไม่ได้ตั้งค่าลิงก์ติดต่อ', 'info');
         }
 
-        async function createRSPayAccount() {
-            const pw = document.getElementById('rspay-pw').value;
-            if(!pw) return Swal.fire('แจ้งเตือน', 'กรุณาตั้งรหัสผ่านสำหรับห้องหลัก', 'warning');
+        async function requestWithdraw() {
+            const amt = Number(document.getElementById('wd-amount').value);
+            const bank = document.getElementById('wd-bank').value;
+            const acc = document.getElementById('wd-acc').value;
 
-            Swal.fire({ title: 'กำลังสร้าง ID อัตโนมัติ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            if(amt <= 0 || !bank || !acc) return Swal.fire('แจ้งเตือน', 'กรอกข้อมูลให้ครบถ้วน', 'warning');
+            if(amt > userData.balance) return Swal.fire('ผิดพลาด', 'ยอดเงินไม่เพียงพอ', 'error');
+
+            Swal.fire({title:'กำลังส่งคำขอ...', didOpen:()=>Swal.showLoading()});
             try {
-                const newId = await generateUniqueId();
-                
-                // สร้างข้อมูลในฐานข้อมูลแอดมิน (Collection: users)
-                await db.collection('users').doc(newId).set({
-                    name: currentUser.name,
-                    password: pw,
-                    balance: 0,
-                    winRate: 35, // โอกาสชนะเริ่มต้น 35%
-                    history: []
+                const batch = db.batch();
+                // หักเงินทันที
+                batch.update(db.collection('users').doc(auth.currentUser.uid), { balance: userData.balance - amt });
+                // สร้างบิล
+                batch.set(db.collection('transactions').doc(), {
+                    uid: auth.currentUser.uid, name: userData.name, amount: amt, bankName: bank, bankAcc: acc, status: 'pending', dateStr: new Date().toLocaleString('th-TH')
                 });
-
-                // อัปเดตผูก ID เข้ากับเว็บเกม
-                await db.collection('game_users').doc(auth.currentUser.uid).update({ rspay_id: newId });
+                await batch.commit();
                 
-                Swal.fire('สำเร็จ!', `สร้าง ID ห้องหลักเรียบร้อย\nID ของคุณคือ: ${newId}`, 'success');
-            } catch (error) {
-                Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error');
-            }
+                document.getElementById('wd-amount').value = ''; document.getElementById('wd-acc').value = ''; document.getElementById('wd-bank').value = '';
+                Swal.fire('สำเร็จ', 'ส่งคำขอถอนเงินแล้ว กรุณารอแอดมินอนุมัติ', 'success');
+            } catch(e) { Swal.fire('ผิดพลาด', 'ไม่สามารถทำรายการได้', 'error'); }
         }
 
-        // --- Game Logic (แอนิเมชัน & ล็อคผล) ---
+        // --- ระบบเกม ---
         const emojis = { rock: '✊', paper: '🖐', scissors: '✌' };
         const winMap = { rock: 'scissors', paper: 'rock', scissors: 'paper' };
         const loseMap = { rock: 'paper', paper: 'scissors', scissors: 'rock' };
 
-        async function playGame(userChoice) {
-            if (!currentUser.rspay_id) return Swal.fire({icon: 'warning', title: 'ยังไม่ได้สร้าง ID ห้องหลัก', text: 'กรุณาไปที่เมนู ฝาก-ถอน เพื่อสร้างบัญชีก่อนเล่นเกม'});
-            
-            const betInput = document.getElementById('bet-amount').value;
-            const betAmount = parseInt(betInput);
+        function play(choice) {
+            const bet = Number(document.getElementById('bet').value);
+            if(bet <= 0 || !bet) return Swal.fire('แจ้งเตือน', 'ใส่เงินเดิมพันให้ถูกต้อง', 'warning');
+            if(bet > userData.balance) return Swal.fire('ผิดพลาด', 'ยอดเงินไม่เพียงพอ', 'error');
 
-            if (isNaN(betAmount) || betAmount <= 0) return Swal.fire('แจ้งเตือน', 'กรุณาใส่จำนวนเงินให้ถูกต้อง', 'warning');
-            if (!rsPayData || rsPayData.balance < betAmount) return Swal.fire('ยอดเงินไม่พอ', 'กรุณาเติมเงินก่อนเล่น', 'error');
-
-            // ซ่อนปุ่มโชว์แอนิเมชัน
             document.getElementById('game-setup').classList.add('hidden');
-            const animBox = document.getElementById('game-anim');
-            animBox.classList.remove('hidden');
-
-            const animUser = document.getElementById('anim-user');
-            const animBot = document.getElementById('anim-bot');
+            document.getElementById('game-anim').classList.remove('hidden');
             
-            // รีเซ็ตอิโมจิเป็นค้อนเขย่า
-            animUser.innerText = '✊'; animBot.innerText = '✊';
-            animUser.className = 'anim-shake'; animBot.className = 'anim-shake';
+            const uh = document.getElementById('u-hand'); const bh = document.getElementById('b-hand');
+            uh.className = 'anim-shake'; bh.className = 'anim-shake';
+            uh.innerText = '✊'; bh.innerText = '✊';
 
-            // จำลองการเขย่า 2 วินาที
             setTimeout(async () => {
-                // หยุดแอนิเมชัน
-                animUser.className = 'result-emoji'; animBot.className = 'result-emoji';
-
-                // คำนวณผลลัพธ์จาก winRate (ล็อคผล)
-                const winRate = rsPayData.winRate !== undefined ? rsPayData.winRate : 35;
-                const isWin = (Math.random() * 100) <= winRate;
+                uh.className = 'result-emoji'; bh.className = 'result-emoji';
                 
-                let botChoice = '';
-                let resultText = '';
-                let amountChange = 0;
+                const rate = userData.winRate !== undefined ? userData.winRate : 35;
+                const isWin = (Math.random() * 100) <= rate;
+                
+                const bChoice = isWin ? winMap[choice] : loseMap[choice];
+                uh.innerText = emojis[choice]; bh.innerText = emojis[bChoice];
 
-                if (isWin) {
-                    botChoice = winMap[userChoice]; // บังคับบอทออกตัวที่แพ้
-                    resultText = 'ชนะ';
-                    amountChange = betAmount;
-                } else {
-                    botChoice = loseMap[userChoice]; // บังคับบอทออกตัวที่ชนะ
-                    resultText = 'แพ้';
-                    amountChange = -betAmount;
-                }
+                const change = isWin ? bet : -bet;
+                await db.collection('users').doc(auth.currentUser.uid).update({ balance: userData.balance + change });
 
-                // โชว์มือที่ออก
-                animUser.innerText = emojis[userChoice];
-                animBot.innerText = emojis[botChoice];
-
-                // อัปเดตฐานข้อมูล (ยอดเงิน & ประวัติ)
-                const historyItem = {
-                    time: new Date().toLocaleString('th-TH'),
-                    bet: betAmount, result: resultText, choice: userChoice, botChoice: botChoice
-                };
-
-                try {
-                    await db.collection('users').doc(currentUser.rspay_id).update({
-                        balance: rsPayData.balance + amountChange,
-                        history: firebase.firestore.FieldValue.arrayUnion(historyItem)
+                setTimeout(() => {
+                    Swal.fire({
+                        title: isWin ? 'คุณชนะ!' : 'คุณแพ้!', 
+                        html: `ได้รับ <span class="${isWin?'text-green-500':'text-red-500'} font-bold">${isWin?'+':''}${change}</span> ฿`,
+                        icon: isWin ? 'success' : 'error',
+                        confirmButtonColor: '#22c55e', confirmButtonText: 'เล่นอีกครั้ง'
+                    }).then(() => {
+                        document.getElementById('game-anim').classList.add('hidden');
+                        document.getElementById('game-setup').classList.remove('hidden');
                     });
-
-                    // รอ 0.5 วิแล้วเด้ง Alert
-                    setTimeout(() => {
-                        Swal.fire({
-                            title: `คุณ${resultText}!`,
-                            html: `ได้รับ <span class="${isWin ? 'text-green-500' : 'text-red-500'} font-bold">${isWin ? '+' : ''}${amountChange}</span> ฿`,
-                            icon: isWin ? 'success' : 'error',
-                            confirmButtonColor: '#22c55e',
-                            confirmButtonText: 'เล่นอีกครั้ง'
-                        }).then(() => {
-                            // กลับหน้าเลือกตั้งค่าเดิมพัน
-                            animBox.classList.add('hidden');
-                            document.getElementById('game-setup').classList.remove('hidden');
-                        });
-                    }, 500);
-
-                } catch (error) {
-                    Swal.fire('ผิดพลาด', 'เกิดข้อผิดพลาดในการประมวลผล', 'error');
-                    animBox.classList.add('hidden');
-                    document.getElementById('game-setup').classList.remove('hidden');
-                }
-
-            }, 2000); // ระยะเวลาเขย่ามือ 2 วินาที
+                }, 500);
+            }, 2000);
         }
     </script>
 </body>
